@@ -13,106 +13,120 @@
 <body>
     <div id="app">
         <h2>Sample21: комноненты</h2>
-        <div><input type ="text" v-model="name"></div>
-        <my-button title="TEST1"></my-button>
+        <div>
+            <input type="text" v-model="name">
+            <!-- использование атрибута ref -->
+            <p ref="p1">P1</p> <button @click="onClick">Использование ref для компонента</button>
+        </div>
+        <my-button ref ="mb1" title="TEST1"></my-button>
         <my-item v-for="i in items" :id="i.id" :title="i.name" @item-event="parentEventHandler"></my-item>
         <br>
         <div>
             <pre>{{$data}}</pre>
         </div>
     </div>
-        <script>
-            const options = {
-                data() {
-                    return {
-                        name: 'TEST',
-                        items: [{id:1, name:'name1'}, {id:2, name:'name2'}]
-                    }
-                },
-
-                // методы 
-                methods: {
-                    test() {
-                        console.log('test invoke')
-                    },
-                    parentEventHandler(){
-                     console.log('parentEventHandler invoke')
-
-                    },
-
-
-                },
-
-                // хуки жизненного цикла
-                //created - метод жиненого цикла (доступ к реактивным свойствам и возможность их проинициализировать)
-                created() {
-                    console.log('created');
-                    // доступ к свойствам и методам
-                    // name
-                    console.log(this.name);
-                    //test
-                    this.test();
-                    //
-                    this.name = 'TEST CHANGED';
-                },
-                // mounted - метод жизненного цикла
-                // шаблон компонента прикрепился к DOM (есть возможность доступа к DOM элементам)
-                mounted() {
-                    console.log('mounted hook invoke!!!');
-                    this.name = 'TEST CHANGED MOUNTED!!!';
-                },
-                beforeUpdate(){
-                    console.log('beforeUpdate');
-                },
-                // элемент DOM объявлен
-                updated(){
-                    console.log('updated');
+    <script>
+        const options = {
+            data() {
+                return {
+                    name: 'TEST',
+                    items: [{
+                        id: 1,
+                        name: 'name1'
+                    }, {
+                        id: 2,
+                        name: 'name2'
+                    }]
                 }
+            },
+
+            // методы 
+            methods: {
+                test() {
+                    console.log('test invoke')
+                },
+                parentEventHandler() {
+                    console.log('parentEventHandler invoke')
+
+                },
+                onClick() {
+                    //получаем доступ к компоненту по ссылке и изменяем значения св-ва
+                    this.$refs.mb1.content = 'NEW VALUE';
+                }
+            },
+
+            // хуки жизненного цикла
+            //created - метод жиненого цикла (доступ к реактивным свойствам и возможность их проинициализировать)
+            created() {
+                console.log('created');
+                // доступ к свойствам и методам
+                // name
+                console.log(this.name);
+                //test
+                this.test();
+                //
+                this.name = 'TEST CHANGED';
+            },
+            // mounted - метод жизненного цикла
+            // шаблон компонента прикрепился к DOM (есть возможность доступа к DOM элементам)
+            mounted() {
+                console.log('mounted hook invoke!!!');
+                this.name = 'TEST CHANGED MOUNTED!!!';
+                //this.$refs.
+                console.log(this.$refs.p1);
+                this.$refs.p1.innerText = "P1 UPDATED";
+            },
+            beforeUpdate() {
+                console.log('beforeUpdate');
+            },
+            // элемент DOM объявлен
+            updated() {
+                console.log('updated');
             }
-            const app = Vue.createApp(options);
+        }
+        const app = Vue.createApp(options);
 
 
-            app.component('my-button', {
-                template: "<div>{{title}} {{content}}</div>",
-                //опция props - для передачи данных из родительского компонента
-                props: ['title'],
-                //опция emits -
-                emits: ['custom-event1', 'custom-event2'],
+        app.component('my-button', {
+            template: "<div>{{title}} {{content}}</div>",
+            //опция props - для передачи данных из родительского компонента
+            props: ['title'],
+            //опция emits -
+            emits: ['custom-event1', 'custom-event2'],
 
-                // Данные представляют объект
-                data() {
-                    return {
-                        content: 'CONTENT1'
-                    }
-                },
-                created() {
-                    console.log('created my-button hook invoked!!!');
-                    console.log(this.title);
+            // Данные представляют объект
+            data() {
+                return {
+                    content: 'CONTENT1'
                 }
-            });
+            },
+            created() {
+                console.log('created my-button hook invoked!!!');
+                console.log(this.title);
+            }
+        });
 
-            app.component('my-item', {
-                template: "<li>{{title}} <button @click='onBClick'>OK</button></li>",
-                props: ['title', 'id'],
-                emits: ['itemEvent'],
-                // методы 
-                methods: {
-                    onBClick() {
-                        console.log('onBClick');
-                        // встроенный метод $emit() - для создания пользовательского события (custom event)
-                        this.$emit('itemEvent')
-                    }
-                },
-
-                created() {
-                    console.log('created my-item hook id:' + this.id);
-                    console.log(this.title);
+        app.component('my-item', {
+            template: "<li>{{title}} <button @click='onBClick'>OK</button></li>",
+            props: ['title', 'id'],
+            emits: ['itemEvent'],
+            // методы 
+            methods: {
+                onBClick() {
+                    console.log('onBClick');
+                    // встроенный метод $emit() - для создания пользовательского события (custom event)
+                    this.$emit('itemEvent')
                 }
-            })
+            },
 
-            const vm = app.mount('#app');
+            created() {
+                console.log('created my-item hook id:' + this.id);
+                console.log(this.title);
+            }
+        })
 
-        </script>
+        const vm = app.mount('#app');
+    </script>
 </body>
 
 </html>
