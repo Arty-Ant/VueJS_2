@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VUE JS SAMPLE1!</title>
+    <!-- подключаем Vue.js из CDN  -->
+    <script src="https://unpkg.com/vue"></script>
+</head>
+
+<body>
+    <!-- элемент с идентификатором (шаблон) -->
+    <div id="app">
+        <h1>Компоненты и методы жизненного цикла</h1>
+        <!-- v-if, v-for -->
+        <hello-comp :uid="someUserId"></hello-comp>
+    </div>
+
+    <template id="helloTemplate">
+        <div style="border: 2px solid red">
+            <h3>Карточка пользователя</h3>
+            <div>ID: {{uid}}</div>
+            <button @click="test">CLICK ME</button>
+        </div>
+    </template>
+
+    <script>
+        // Для создания компонента используется функция Vue.component(tagName, options)
+        // tagName - имя тега для использования на странице 
+        // options - опции для экземпляра данного компонента      
+
+        // Есть два способа указания имён компонентов:        
+        // В стиле kebab-case
+        // Vue.component('my-component-name', { /* ... */ })        
+        // В стиле PascalCase
+        // Vue.component('MyComponentName', { /* ... */ })
+
+        // при использовании непосредственно в DOM имена в kebab-case: my-component-name
+        Vue.component("HelloComp", {
+            // props (свойства)
+            props: ['uid'],
+            template: '#helloTemplate',
+            methods: {
+                test: function () {
+                    console.log('test');
+                    // используем механизм событий 
+                    // childevent - имя события
+                    this.$emit('childevent', "SOME MESSAGE!!!!!!!!!!!!!!!!!!!!!");
+                }
+            },
+            // для выполнения инициализации (загрузка данных с помощью серверного API)
+            created: function () {
+                console.log('hello comp: created() _uid=' + this.uid);
+            },
+            mounted: function () {
+                console.log('hello comp: mounted()');
+            },
+            beforeDestroy: function () {
+                console.log('hello comp: beforeDestroy()');
+            },
+            destroyed: function () {
+                console.log('hello comp: destroyed()');
+            }
+        });
+
+
+        // new Vue(/* опции */) - создаем экземпляр Vue 
+        let vm = new Vue({
+            // опция el позволяет выполнить привязку шаблона 	
+            el: "#app", // селектор классов 
+            // опция data (данные которые мы используем для отображени с помощью шаблолна)
+            data: {
+                message: "Привет, Vue!",
+                price: 200,
+                car: { name: "ZZZZZ" }, 
+                canView: true, 
+                someUserId: 111
+            },
+            // методы 
+            methods: {
+                // метод использует св-во price
+                getPrice: function () {
+                    // для доступа к данным из модели данных используем this
+                    console.log("getPrice invoked!!!");
+                    return this.price;
+                },
+                onChildEvent: function (param) {
+                    console.log("onChildEvent invoked!!!");
+                    console.log("onChildEvent=" + param);
+                }
+                // , 
+                // canView: function(){
+                //     return tr
+                // }
+            }
+        })
+    </script>
+</body>
+
+</html>
