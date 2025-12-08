@@ -5,98 +5,114 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VUE JS SAMPLE1!</title>
+    <title>VUE JS SAMPLE21!</title>
     <!-- подключаем Vue.js из CDN  -->
     <script src="https://unpkg.com/vue"></script>
 </head>
 
 <body>
-    <!-- элемент с идентификатором (шаблон) -->
     <div id="app">
-        <h1>Компоненты и методы жизненного цикла</h1>
-        <!-- v-if, v-for -->
-        <hello-comp :uid="someUserId"></hello-comp>
-    </div>
-
-    <template id="helloTemplate">
-        <div style="border: 2px solid red">
-            <h3>Карточка пользователя</h3>
-            <div>ID: {{uid}}</div>
-            <button @click="test">CLICK ME</button>
+        <h2>Sample21: комноненты</h2>
+        <div><input type ="text" v-model="name"></div>
+        <my-button title="TEST1"></my-button>
+        <my-item v-for="i in items" :id="i.id" :title="i.name" @item-event="parentEventHandler"></my-item>
+        <br>
+        <div>
+            <pre>{{$data}}</pre>
         </div>
-    </template>
-
-    <script>
-        // Для создания компонента используется функция Vue.component(tagName, options)
-        // tagName - имя тега для использования на странице 
-        // options - опции для экземпляра данного компонента      
-
-        // Есть два способа указания имён компонентов:        
-        // В стиле kebab-case
-        // Vue.component('my-component-name', { /* ... */ })        
-        // В стиле PascalCase
-        // Vue.component('MyComponentName', { /* ... */ })
-
-        // при использовании непосредственно в DOM имена в kebab-case: my-component-name
-        Vue.component("HelloComp", {
-            // props (свойства)
-            props: ['uid'],
-            template: '#helloTemplate',
-            methods: {
-                test: function () {
-                    console.log('test');
-                    // используем механизм событий 
-                    // childevent - имя события
-                    this.$emit('childevent', "SOME MESSAGE!!!!!!!!!!!!!!!!!!!!!");
-                }
-            },
-            // для выполнения инициализации (загрузка данных с помощью серверного API)
-            created: function () {
-                console.log('hello comp: created() _uid=' + this.uid);
-            },
-            mounted: function () {
-                console.log('hello comp: mounted()');
-            },
-            beforeDestroy: function () {
-                console.log('hello comp: beforeDestroy()');
-            },
-            destroyed: function () {
-                console.log('hello comp: destroyed()');
-            }
-        });
-
-
-        // new Vue(/* опции */) - создаем экземпляр Vue 
-        let vm = new Vue({
-            // опция el позволяет выполнить привязку шаблона 	
-            el: "#app", // селектор классов 
-            // опция data (данные которые мы используем для отображени с помощью шаблолна)
-            data: {
-                message: "Привет, Vue!",
-                price: 200,
-                car: { name: "ZZZZZ" }, 
-                canView: true, 
-                someUserId: 111
-            },
-            // методы 
-            methods: {
-                // метод использует св-во price
-                getPrice: function () {
-                    // для доступа к данным из модели данных используем this
-                    console.log("getPrice invoked!!!");
-                    return this.price;
+    </div>
+        <script>
+            const options = {
+                data() {
+                    return {
+                        name: 'TEST',
+                        items: [{id:1, name:'name1'}, {id:2, name:'name2'}]
+                    }
                 },
-                onChildEvent: function (param) {
-                    console.log("onChildEvent invoked!!!");
-                    console.log("onChildEvent=" + param);
+
+                // методы 
+                methods: {
+                    test() {
+                        console.log('test invoke')
+                    },
+                    parentEventHandler(){
+                     console.log('parentEventHandler invoke')
+
+                    },
+
+
+                },
+
+                // хуки жизненного цикла
+                //created - метод жиненого цикла (доступ к реактивным свойствам и возможность их проинициализировать)
+                created() {
+                    console.log('created');
+                    // доступ к свойствам и методам
+                    // name
+                    console.log(this.name);
+                    //test
+                    this.test();
+                    //
+                    this.name = 'TEST CHANGED';
+                },
+                // mounted - метод жизненного цикла
+                // шаблон компонента прикрепился к DOM (есть возможность доступа к DOM элементам)
+                mounted() {
+                    console.log('mounted hook invoke!!!');
+                    this.name = 'TEST CHANGED MOUNTED!!!';
+                },
+                beforeUpdate(){
+                    console.log('beforeUpdate');
+                },
+                // элемент DOM объявлен
+                updated(){
+                    console.log('updated');
                 }
-                // , 
-                // canView: function(){
-                //     return tr
-                // }
             }
-        })
-    </script>
+            const app = Vue.createApp(options);
+
+
+            app.component('my-button', {
+                template: "<div>{{title}} {{content}}</div>",
+                //опция props - для передачи данных из родительского компонента
+                props: ['title'],
+                //опция emits -
+                emits: ['custom-event1', 'custom-event2'],
+
+                // Данные представляют объект
+                data() {
+                    return {
+                        content: 'CONTENT1'
+                    }
+                },
+                created() {
+                    console.log('created my-button hook invoked!!!');
+                    console.log(this.title);
+                }
+            });
+
+            app.component('my-item', {
+                template: "<li>{{title}} <button @click='onBClick'>OK</button></li>",
+                props: ['title', 'id'],
+                emits: ['itemEvent'],
+                // методы 
+                methods: {
+                    onBClick() {
+                        console.log('onBClick');
+                        // встроенный метод $emit() - для создания пользовательского события (custom event)
+                        this.$emit('itemEvent')
+                    }
+                },
+
+                created() {
+                    console.log('created my-item hook id:' + this.id);
+                    console.log(this.title);
+                }
+            })
+
+            const vm = app.mount('#app');
+
+        </script>
 </body>
 
 </html>
