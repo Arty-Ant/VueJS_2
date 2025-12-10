@@ -1,6 +1,16 @@
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import MyList from './components/MyList.vue'
+
+const list = ["one", "two", "three",]
+
+var obj = {
+  '/' : 'home',
+  '/about' : 'about',
+  '/contacts' :'contacts',
+  '/products' :'My Products'
+}
+
 </script>
 
 <template>
@@ -10,12 +20,13 @@ import HelloWorld from './components/HelloWorld.vue'
     <div class="wrapper">
       <HelloWorld msg="You did it!" />
 
+      <MyList :list="list"></MyList>
+
       <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
+        <RouterLink  v-for="(value, pname) in obj" :to=pname>{{value}}</RouterLink>
       </nav>
     </div>
-  </header>
+   </header>
 
   <RouterView />
 </template>
