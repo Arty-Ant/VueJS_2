@@ -1,12 +1,7 @@
 <script setup>
+import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
-
-import {provide} from 'vue'
-
-/* provide - для предоставления данных потомкам */
-
-provide(/* ключ */ 'message',/* значение */ 'привет!')
-provide(/* ключ */ 'message2',/* значение */ 'привет2!')
+import Counter from './components/Counter.vue'
 </script>
 
 <template>
@@ -14,16 +9,19 @@ provide(/* ключ */ 'message2',/* значение */ 'привет2!')
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
+      <Counter></Counter>
+      <Counter></Counter>
+      <Counter></Counter>
       <HelloWorld msg="You did it!" />
 
-
+      <nav>
+        <RouterLink to="/">Home</RouterLink>
+        <RouterLink to="/about">About</RouterLink>
+      </nav>
     </div>
   </header>
 
-  <main>
-    <h2>Provide/Inject - пробрасывание входных параметров</h2>
-  </main>
-
+  <RouterView />
 </template>
 
 <style scoped>
@@ -44,7 +42,13 @@ nav {
   margin-top: 2rem;
 }
 
+nav a.router-link-exact-active {
+  color: var(--color-text);
+}
 
+nav a.router-link-exact-active:hover {
+  background-color: transparent;
+}
 
 nav a {
   display: inline-block;

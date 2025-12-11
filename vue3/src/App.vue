@@ -24,11 +24,15 @@ var obj = {
 
       <nav>
         <RouterLink  v-for="(value, pname) in obj" :to=pname>{{value}}</RouterLink>
+        <!-- используем имя маршрута - переход по name about -->
+         <RouterLink :to="{name: 'about'}">About (by name)</RouterLink>
       </nav>
     </div>
    </header>
 
-  <RouterView />
+<RouterView  />
+<!-- для каждого предоставления можно определить name -->
+<RouterView name="test" />
 </template>
 
 <style scoped>
